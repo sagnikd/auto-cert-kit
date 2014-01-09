@@ -217,7 +217,9 @@ def get_network_routes(session, host_ref):
     """Return a list of NetRoute objects for this system"""
     results = call_ack_plugin(session, 'get_host_routes', {}, host=host_ref)
     recs = xml_to_dicts(results, 'routes')
-
+    log.debug ("SAGNIK")
+    log.debug (make_local_call(["/sbin/route",'-n']))
+    log.debug (make_local_call(["/sbin/arp",'-n']))
     routes = []
 
     # Create NetRoute objects
@@ -1130,7 +1132,7 @@ def pool_wide_cleanup(session, tag=FOR_CLEANUP):
     and remove them as part of a cleanup operation"""
     log.debug("**Performing pool wide cleanup...**")
     pool_wide_vm_cleanup(session, tag)
-    pool_wide_pif_cleanup(session, tag)
+    #pool_wide_pif_cleanup(session, tag)
     pool_wide_network_cleanup(session, tag)
     pool_wide_host_cleanup(session)
 
@@ -1152,6 +1154,7 @@ def host_cleanup(session, host):
             default_route_list.append(route_obj)
     
     default_route_table = route.RouteTable(default_route_list) 
+    print ("%SAGNIK%")
     missing_routes = default_route_table.get_missing(cur_route_table)
 
     dom0_ref = _find_control_domain(session, host)
@@ -1222,10 +1225,12 @@ def pool_wide_network_cleanup(session, tag):
         elif session.xenapi.network.get_MTU(network) != '1500':
             set_network_mtu(session, network, '1500')
 
-def pool_wide_pif_cleanup(session, tag):
+"""def pool_wide_pif_cleanup(session, tag):
     """Searches for PIFs with a cleanup tag, and removes
     their IP address if found."""
 
+    log.debug ("SAGNIK BEFORE PIF CLEANUP")
+    log.debug (make_local_call(["/sbin/route",'-n']))
     pifs = session.xenapi.PIF.get_all()
     for pif in pifs:
         if tag in session.xenapi.PIF.get_other_config(pif):
@@ -1236,8 +1241,9 @@ def pool_wide_pif_cleanup(session, tag):
                                              '', 
                                              '', 
                                              '')
-
-
+    log.debug ("AFTER PIF CLEANUP #SAGNIK")
+    log.debug (make_local_call(["/sbin/route",'-n']))
+"""
 def get_pool_management_device(session):
     """Returns the device used for XAPI mangagment"""
     device = None

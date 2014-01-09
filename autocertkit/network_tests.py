@@ -126,6 +126,9 @@ class IperfTest:
                     })
         
         # Make a plugin call to add a route to the client
+        log.debug ("SAGNIK before add_route in config route")
+        log.debug (make_local_call(["arp",'-n']))
+        log.debug (make_local_call(["/sbin/route",'-n']))
         self.plugin_call('add_route',
                    {'vm_ref': self.client,
                     'dest_ip': self.get_server_ip(self.get_device_name(self.server)),
@@ -135,7 +138,9 @@ class IperfTest:
                                                   ),
                     'device': self.get_device_name(self.client)}
                     )
-
+        log.debug ("SAGNIK after add_route")
+        log.debug (make_local_call(["arp",'-n']))
+        log.debug (make_local_call(["/sbin/route",'-n']))
         self.plugin_call('add_route',
                     {'vm_ref': self.server,
                     'dest_ip': self.get_client_ip(self.get_device_name(self.client)),
@@ -145,6 +150,9 @@ class IperfTest:
                                                   ),
                     'device': self.get_device_name(self.server)}
                     )
+        log.debug ("SAGNIK after first add_route")
+        log.debug (make_local_call(["arp",'-n']))
+        log.debug (make_local_call(["/sbin/route",'-n']))
 
     def run(self):
         """This classes run test function"""
@@ -954,18 +962,21 @@ class MTUPingTestClass(testbase.NetworkTestClass):
                 'dest_mac': get_vm_device_mac(session, vm2_ref, 'eth1'),
                 'device': 'eth1',
                }   
-        
+        log.debug ("SAGNIK before add_route")
+        log.debug (make_local_call(["/sbin/route",'-n']))
         call_ack_plugin(session, 'add_route', args)
-
+        log.debug ("SAGNIK after add_route")
+        log.debug (make_local_call(["/sbin/route",'-n']))
         args = {
                 'vm_ref': vm2_ref,
                 'dest_ip': vm1_ip_eth1,
                 'dest_mac': get_vm_device_mac(session, vm1_ref, 'eth1'),
                 'device': 'eth1',
                }   
-        
+        log.debug ("SAGNIK before add_route")
         call_ack_plugin(session, 'add_route', args)
-
+        log.debug ("SAGNIK after add_route")
+        log.debug (make_local_call(["/sbin/route",'-n']))
 
 
         for vm_ref in [vm1_ref, vm2_ref]:

@@ -380,7 +380,8 @@ def make_local_call(call):
     stdout, stderr = process.communicate()
     if process.returncode == 0:
         res = str(stdout).strip()
-        return str(stdout).strip()
+        log.debug("stdout: %s"  % str(stdout))
+	return str(stdout).strip()
     else:
         msg = "ERR: Could not make local call %s" % ' '.join(call)
         log.error(msg)
@@ -789,8 +790,8 @@ def add_route(session, args):
     vm_ref = validate_exists(args, 'vm_ref') 
     device = validate_exists(args, 'device')
     dest_ip = validate_exists(args, 'dest_ip')
-    gw = validate_exists(args, 'gw', required=False)
-    mask = validate_exists(args, 'mask', required=False)
+    gw = validate_exists(args, 'gw')
+    mask = validate_exists(args, 'mask')
    
     log.debug("add_route %s %s %s" % (vm_ref, device, dest_ip))
 
