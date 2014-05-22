@@ -496,6 +496,17 @@ def get_pci_subsystem(bus_id):
         log.debug("Exception: %s" % str(e))
     return ""
 
+def get_hba_list():
+    """Return the HBA List"""
+    log.debug("hba bus ID: %s" % bus_id)
+    call = ['ls', '-la', '/sys/block/sda/device']
+    try:
+        res = make_local_call(call)
+        return res["stdout"]
+    except Exception, e:
+        log.debug("Exception: %s" % str(e))
+    return
+
 @log_exceptions
 def create_output_package(session, args):
     """Create an output package for submission to Citrix"""
@@ -638,11 +649,13 @@ def get_local_storage_devices(session, args):
     try:
         
         disk = _get_local_storage_disk(session)
+        log.debug("##SAGNIK has to add these to xml in this module: disk %s" %s)
     
         try:
-            bus_path = os.readlink("/sys/block/%s/device" % disk)
+            bus_path = os.readlink("/sys/block/%s/device/" % disk)
+            log.debug("##SAGNIK reading bus_path %s" % bus_path)
         except Exception, e:
-            log.debug("Could not read bus path '/sys/block/%s/device'. Exception: %s" % (disk, str(e)))
+            log.debug("Could not read bus path '/sys/block/%s/device/subsystem/devices/host0'. Exception: %s" % (disk, str(e)))
             return list_to_xml([{'Exception':'StorageInfoNotAvailable'}], 'device')
     
         bus_id = bus_path.split('/')[4]

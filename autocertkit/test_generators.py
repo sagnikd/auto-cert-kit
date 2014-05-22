@@ -214,7 +214,7 @@ class ProcessorTestGenerator(TestGenerator):
 
 class StorageTestGenerator(TestGenerator):
     """TestGenertor class specific to Storage tests"""
-    TAG = 'LS'
+    TAG = 'LSTOR'
     
     def get_device_config(self):
         """Retrieve info regarding the local SCSI devices"""

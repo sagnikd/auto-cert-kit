@@ -277,7 +277,7 @@ class DeviceTestClass(object):
 
         # Find the node belonging to this test class by matching name
         node_list = [node for node in tc_nodes if node.getAttribute('name') == self.get_name()]
-
+        print "####SAGNIK node_list %s" % node_list
         # Check for the existence of *only one* node
         if len(node_list) != 1:
             raise Exception("Error: Expecting there not to be test class duplicates. '%s'" % node_list)
@@ -344,7 +344,7 @@ class Device(object):
                 return self.config['PCI_id']
             if self.tag == "CPU":
                 return get_cpu_id(self.config['modelname'])
-            if self.tag == "LS":
+            if self.tag == "LSTOR":
                 PCI_id = self.config['vendor'] + ":" + self.config["device"]
                 return PCI_id
             if self.tag == "OP":
@@ -368,7 +368,7 @@ class Device(object):
                 return self.config['PCI_description']
             if self.tag == "CPU":
                 return self.config['modelname']
-            if self.tag == "LS":
+            if self.tag == "LSTOR":
                 LS_info = "Storage device using the %s driver" % self.config['driver']
                 return LS_info
             if self.tag == "OP":
@@ -442,8 +442,10 @@ class Device(object):
         subsystem = self.get_subsystem()
         if subsystem and len(subsystem) > 0:
             subsystem = stream.write("%s\n" % subsystem)
+        hba_list = None #self.get_hbalist()
+        if hba_list:
+            stream.write("hba_list: %s" % hba_list)
         stream.write("#########################\n\n")
-
         if not self.has_passed():
             stream.write("This device has not passed all the neccessary tests and so will not be supported.")
             stream.write("In order for this device to be supported, this device must pass the following tests:\n")
@@ -493,6 +495,7 @@ class AutoCertKitRun(object):
         
         self.config = get_attributes(gcns[0])
 
+        print "####SAGNIK \n %s" % self.config
         device_nodes = dom.getElementsByTagName('device')
         device_list = []
         for device_node_xml in device_nodes:

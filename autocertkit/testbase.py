@@ -400,7 +400,7 @@ class NetworkTestClass(TestClass):
 
 class LocalStorageTestClass(TestClass):
     """Sub class for storage tests"""
-    base_tag = 'LS'
+    base_tag = 'LSTOR'
 
 class CPUTestClass(TestClass):
     """Sub class for CPU tests"""
